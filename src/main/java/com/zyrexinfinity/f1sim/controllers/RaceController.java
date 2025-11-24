@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class RaceController {
     @Autowired
-    RaceService raceService;
+    private RaceService raceService;
 
     @RequestMapping("/race")
     public String race(Model model){

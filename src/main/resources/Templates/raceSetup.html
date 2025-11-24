@@ -1,48 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>F1SIM</title>
-    <link rel="stylesheet" type="text/css" href="style/raceSetup.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div class="background"></div>
-    <header>
-        <h3 class="title"><span class="highlight">F1</span>SIM</h3>
-    </header>
-    <main>
-        <div class="menu">
-            <div class="grid">
-                <ul class="column">
-                    <li>
-                        <div class="settingSection" id="track-menu">
-                            <img class="child" th:src="${defaults.track.imageURL}" alt="Track Icon">
-                            <p class="child" th:text="${defaults.track}"></p>
-                        </div>
-                    </li>
-                    <li id="left-bottom-item">
-                        <div id="race-conditions-menu"></div>
-                    </li>
-                </ul>
-                <ul class="column">
-                    <li>
-                        <div id="grid-menu"></div>
-                    </li>
-                    <li id="right-bottom-item">
-                        <div id="race-mode-menu"></div>
+    <head>
+        <meta charset="UTF-8">
+        <title>F1SIM</title>
+        <link rel="stylesheet" type="text/css" href="style/raceSetup.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="javascript/jquery.fittext.js"></script>
+        <script src="javascript/raceSetup.js"></script>
+    </head>
+    <body>
+        <div class="popup-menu" id="popup-menu">
+            <div class="popup-menu-header">
+                <div class="popup-title-wrap"><h2 class="popup-title">Available <span class="highlight">F1</span> Tracks</h2></div>
+                <button class="popup-exit-button" id="popup-exit-button">X</button>
+            </div>
+            <div class="popup-track-list-wrap">
+                <ul class="popup-row" th:each="chunk, rowStat : ${chunkedTracks}" th:id="'row-' + ${rowStat.index}">
+                    <li th:each="track, i : ${chunk}" th:data-track="${track}" class="popup-track-wrap">
+                        <img class="popup-track-image" th:id="'popup-track-image-' + ${i.index}" th:src="'images/' + ${track.trackImageName} + '.webp'">
+                        <div class="popup-track-name-wrap"><p class="popup-track-name" th:text="${track.trackName}"></p></div>
                     </li>
                 </ul>
             </div>
-            <div id="modifiers-menu"></div>
         </div>
-     </div>
-    </main>
-    <footer>
-        <p>Made by <span class="highlight">ZyreX-Infinity</span></p>
-    </footer>
-</body>
+        <div class="background"></div>
+        <header>
+            <div class="title-wrap"><a href="/home"><h1 class="title"><span class="highlight">F1</span>SIM</h1></a></div>
+        </header>
+        <main>
+            <div class="menu">
+                <div class="general-settings">
+                    <ul class="column" id="left-column">
+                        <li id="track-selection">
+                            <div class="circuit-title-wrap">
+                                <h3 id="circuit-title">Circuit</h3>
+                            </div>
+                            <div class="track-wrap" id="track-wrap">
+                                <img id="track-image" th:src="'images/' + ${track.trackImageName} + '.webp'">
+                                <div class="track-name-wrap"><p id="track-name" th:text="${track.trackName}"></p></div>
+                            </div>
+                        </li>
+                        <li class="bottom-item" id="conditions-selection">
+                            <div class="condition-title-wrap">
+                                <h3 id="condition-title">Race Conditions</h3>
+                            </div>
+                            <div class="conditions-list-wrap">
+                                <div class="conditions-item-wrap">
+                                    <input class="condition-item" id="clear-condition" type="radio" name="condition" value="clear" checked>
+                                        <label class="condition-label" for="clear-condition">Clear ☀︎</label>
+                                    </input>
+                                </div>
+                                <div class="conditions-item-wrap">
+                                    <input class="condition-item" id="rain-condition" type="radio" name="condition" value="rain">
+                                        <label class="condition-label" for="rain-condition">Rain 🌨</label>
+                                    </input>
+                                </div>
+                                <div class="conditions-item-wrap">
+                                    <input class="condition-item" id="heavy-rain-condition" type="radio" name="condition" value="heavyRain">
+                                        <label class="condition-label" for="heavy-rain-condition">Heavy Rain 🌩</label>                                
+                                    </input>
+                                </div>
+                                <div class="conditions-item-wrap">
+                                    <input class="condition-item" id="random-condition" type="radio" name="condition" value="random">
+                                        <label class="condition-label" for="random-condition">Random ⇄</label>
+                                    </input>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="column" id="right-column">
+                        <li id="grid-selection">
+                            <div class="grid-title-wrap">
+                                <h3 id="grid-title">Grid</h3>
+                            </div>
+                            <div class="grid-list-wrap">
+                                <div class="grid-item-wrap" th:each="grid, iter : ${grids}">
+                                    <input class="grid-item" th:id="'grid-year-' + ${grid.key}" type="radio" name="grid" 
+                                    th:value="${grid.key}" th:checked="${grid.key} == '2025'">
+                                        <label class="grid-label" th:for="'grid-year-' + ${grid.key}" th:text="${grid.key}"></label>    
+                                        <label class="driver-amount" th:for="'grid-year-' + ${grid.key}" th:text="${grid.value} + ' drivers'"></label>
+                                    </input>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="bottom-item" id="mode-selection">
+                            <div class="racemode-title-wrap">
+                                <h3 id="racemode-title">Race Mode</h3>
+                            </div>
+                            <div class="racemodes-list-wrap">
+                                <div class="racemode-item-wrap">
+                                    <input class="racemode-item" id="racemode-race" type="radio" name="racemode" value="race" checked>
+                                        <label class="racemode-label" for="racemode-race">Race</label>
+                                    </input>
+                                </div>
+                                <div class="racemode-item-wrap">
+                                    <input class="racemode-item" id="racemode-sprint" type="radio" name="racemode" value="sprint">
+                                        <label class="racemode-label" for="racemode-sprint">Sprint</label>
+                                    </input>
+                                </div>
+                                <div class="racemode-item-wrap">
+                                    <input class="racemode-item" id="racemode-racegp" type="radio" name="racemode" value="qualiAndRace">
+                                        <label class="racemode-label" for="racemode-racegp">Quali + Race</label>
+                                    </input>
+                                </div>
+                                <div class="racemode-item-wrap">
+                                    <input class="racemode-item" id="racemode-sprintgp" type="radio" name="racemode" value="qualiAndSprint">
+                                        <label class="racemode-label" for="racemode-sprintgp">Quali + Sprint</label>                                
+                                    </input>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modifier-settings">
+                    <ul>
+                        <li>
+                        </li>
+                        <li id="bottom-item">
+                        </li>
+                    </ul>
+                </div>
+                <div class="social">
+                    <p id="annotation">Made by <span class="highlight">ZyreX-Infinity</span></p>
+                    <a class="logo-wrap" href="https://github.com/ZyreXINF" target="_blank">
+                        <svg class="logo" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 499.368">
+                            <path fill="#fff" fill-rule="nonzero" d="M256.003 0C114.555 0 0 114.555 0 256.003c0 113.286 73.28 208.961 175.038 242.865 12.796 2.247 17.586-5.433 17.586-12.153 0-6.077-.309-26.225-.309-47.686-64.313 11.844-80.941-15.674-86.058-30.055-2.896-7.37-15.359-30.1-26.269-36.177-8.948-4.808-21.752-16.652-.31-16.961 20.168-.309 34.574 18.564 39.382 26.244 23.038 38.732 59.839 27.828 74.555 21.101 2.227-16.627 8.947-27.828 16.318-34.239-56.968-6.386-116.467-28.471-116.467-126.399 0-27.827 9.907-50.866 26.225-68.787-2.562-6.41-11.51-32.655 2.562-67.853 0 0 21.436-6.72 70.409 26.244 20.483-5.767 42.227-8.638 63.998-8.638 21.751 0 43.52 2.896 63.997 8.638 48.973-33.279 70.39-26.244 70.39-26.244 14.09 35.192 5.117 61.443 2.562 67.853 16.318 17.921 26.244 40.625 26.244 68.787 0 98.237-59.84 119.988-116.801 126.399 9.282 8.014 17.277 23.373 17.277 47.371 0 34.238-.309 61.751-.309 70.389 0 6.721 4.808 14.735 17.586 12.179C438.739 464.964 512 368.955 512 256.003 512 114.555 397.445 0 256.003 0z"/>
+                        </svg>
+                    </a>
+                    <a class="logo-wrap" href="https://x.com/ZyreXInfinity" target="_blank">
+                        <svg class="logo" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 462.799">
+                            <path fill="#fff" fill-rule="nonzero" d="M403.229 0h78.506L310.219 196.04 512 462.799H354.002L230.261 301.007 88.669 462.799h-78.56l183.455-209.683L0 0h161.999l111.856 147.88L403.229 0zm-27.556 415.805h43.505L138.363 44.527h-46.68l283.99 371.278z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        </main>
+    </body>
 </html>

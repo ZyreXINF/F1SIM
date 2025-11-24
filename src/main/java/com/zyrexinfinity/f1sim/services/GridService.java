@@ -4,12 +4,42 @@ import com.zyrexinfinity.f1sim.enums.DriverStatus;
 import com.zyrexinfinity.f1sim.simulation.Driver;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class GridService {
+
+    public Map<String, Integer> getGridsList(){
+        Map<String, Integer> grids = new TreeMap<>();
+        grids.put("2025", 20);
+        grids.put("2024", 20);
+        grids.put("2023", 20);
+        grids.put("2022", 20);
+        grids.put("2021", 20);
+        grids.put("2020", 20);
+        grids.put("2019", 20);
+        grids.put("2018", 20);
+        grids.put("2017", 20);
+        grids.put("2016", 22);
+        grids.put("2015", 20);
+        grids.put("2014", 22);
+        grids.put("2013", 22);
+        grids.put("2012", 24);
+        grids.put("2011", 24);
+        grids.put("2010", 24);
+        grids.put("2009", 20);
+        grids.put("2008", 22);
+        grids.put("2007", 22);
+        grids.put("2006", 22);
+        grids.put("2005", 20);
+        grids.put("2004", 20);
+        grids.put("2003", 20);
+        grids.put("2002", 20);
+        grids.put("2001", 22);
+        grids.put("2000", 22);
+        return ((NavigableMap<String, Integer>) grids).descendingMap();
+    }
+
     public List<Driver> setStartingPositions(List<Driver> rawGrid){
         List<Driver> positionedGrid = new ArrayList<>(rawGrid);
         for (int i = positionedGrid.size()-1; i >= 0; i--) {

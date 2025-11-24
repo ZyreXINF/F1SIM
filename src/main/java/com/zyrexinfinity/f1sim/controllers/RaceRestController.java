@@ -15,9 +15,9 @@ import java.util.Objects;
 @RestController
 public class RaceRestController {
     @Autowired
-    RaceService raceService;
+    private RaceService raceService;
     @Autowired
-    SessionFactory SessionFactory;
+    private SessionFactory SessionFactory;
 
     //TODO Secure requests with Spring Security Authentification
 

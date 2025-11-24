@@ -11,9 +11,9 @@ import java.util.List;
 @Service
 public class DriverService {
     @Autowired
-    DriverRepo driverRepo;
+    private DriverRepo driverRepo;
     @Autowired
-    RaceSettingsService settingsService;
+    private RaceSettingsService settingsService;
 
     public List<Driver> fetchDrivers(){
         try{
