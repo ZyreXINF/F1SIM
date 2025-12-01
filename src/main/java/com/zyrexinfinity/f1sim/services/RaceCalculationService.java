@@ -3,13 +3,32 @@ package com.zyrexinfinity.f1sim.services;
 import com.zyrexinfinity.f1sim.enums.DriverStatus;
 import com.zyrexinfinity.f1sim.simulation.CalculationContext;
 import com.zyrexinfinity.f1sim.simulation.Driver;
+import com.zyrexinfinity.f1sim.simulation.RaceSession;
 import com.zyrexinfinity.f1sim.simulation.RaceSettings;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class RaceCalculationService {
+    public List<Driver> randomizeCircuitPace(List<Driver> unmodifiedGrid, RaceSettings settings){
+        List<Driver> modifiedGrid = new ArrayList<>(unmodifiedGrid);
+        System.out.println(settings);
+        for (Driver driver : modifiedGrid) {
+            double modifiedDriverPace = normalize(clamp(
+                    normalize(driver.getDriverPace()/100) +
+                            (normalize(ThreadLocalRandom.current().nextDouble(-1.0, 1.0)
+                                    * settings.getMaxDriverPaceDeviation())),
+                    0,1));
+            System.out.println(driver.getFullName() + " {basePace: " + driver.getDriverPace()
+                    + "; finalizedPace: " + (modifiedDriverPace) + "}" );
+            driver.setDriverPace(modifiedDriverPace * 100);
+        }
+        return modifiedGrid;
+    }
+
     public long calculateLapTime(CalculationContext calculationContext){
         long lapTime = 0L;
         double lapPaceRandomMultiplier = normalize(ThreadLocalRandom.current().nextDouble(-1.0, 1.0));

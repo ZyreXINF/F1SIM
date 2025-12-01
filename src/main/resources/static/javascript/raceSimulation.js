@@ -175,8 +175,6 @@ async function requestSessionData() {
                     oldDriversPositions = drivers.map(d => d.fullName);
                 }
                 drivers = sessionDataJSON.driversList;
-                console.log(oldDriversPositions);
-                console.log(drivers);
                 raceStatus = sessionDataJSON.raceStatus;
                 currentLap = sessionDataJSON.currentLap;
                 lapAmount = sessionDataJSON.lapAmount;

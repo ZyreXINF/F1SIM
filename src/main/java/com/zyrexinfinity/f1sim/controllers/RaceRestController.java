@@ -3,6 +3,9 @@ package com.zyrexinfinity.f1sim.controllers;
 import com.zyrexinfinity.f1sim.factory.SessionFactory;
 import com.zyrexinfinity.f1sim.model.SessionData;
 import com.zyrexinfinity.f1sim.services.RaceService;
+import com.zyrexinfinity.f1sim.simulation.RaceSession;
+import com.zyrexinfinity.f1sim.simulation.RaceSettings;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,31 +17,28 @@ import java.util.Objects;
 
 @RestController
 public class RaceRestController {
-    @Autowired
-    private RaceService raceService;
-    @Autowired
-    private SessionFactory SessionFactory;
-
-    //TODO Secure requests with Spring Security Authentification
+    @Autowired private RaceService raceService;
+    @Autowired private SessionFactory sessionFactory;
 
     @PostMapping("/startRace")
-    public void startRace(){
-        raceService.startRace();
+    public void startRace(HttpSession httpSession){
+        System.out.println(httpSession.getAttribute("userRaceSession").hashCode());
+        RaceSession updatedUserRaceSession = raceService.startRace();
+        httpSession.setAttribute("userRaceSession", updatedUserRaceSession);
+        System.out.println(httpSession.getAttribute("userRaceSession").hashCode());
     }
 
     @PostMapping("/restartRace")
-    public void restartRace(){
-        raceService.setSession(null);
-        boolean raceInitialized = raceService.initRace();
-        if(raceInitialized){
-            raceService.startRace();
-        }
+    public void restartRace(HttpSession httpSession){
+        raceService.initRace((RaceSettings) httpSession.getAttribute("userRaceSettings"));
+        RaceSession updatedUserRaceSession = raceService.startRace();
+        httpSession.setAttribute("userRaceSession", updatedUserRaceSession);
     }
 
     @GetMapping("/getSessionData")
     public SessionData getSessionData() {
-        if (!Objects.isNull(raceService.getSession())) {
-            return SessionFactory.createSessionData(raceService.getSession());
+        if (!Objects.isNull(raceService.getUserRaceSession())) {
+            return sessionFactory.createSessionData(raceService.getUserRaceSession());
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No active race session found"

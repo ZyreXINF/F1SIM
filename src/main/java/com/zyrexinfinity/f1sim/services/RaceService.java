@@ -8,6 +8,7 @@ import com.zyrexinfinity.f1sim.simulation.RaceSettings;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,53 +17,44 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@SessionScope
 public class RaceService {
-    @Autowired
-    private GridService gridService;
-    @Autowired
-    private DriverService driverService;
-    @Autowired
-    private RaceSettingsService raceSettingsService;
-    @Autowired
-    private SessionFactory raceSessionFactory;
+    @Autowired private GridService gridService;
+    @Autowired private DriverService driverService;
+    @Autowired private RaceSettingsService raceSettingsService;
+    @Autowired private RaceCalculationService raceCalculationService;
+    @Autowired private SessionFactory raceSessionFactory;
 
-    private RaceSession session;
     private ScheduledExecutorService scheduler;
+    @Autowired private RaceSession userRaceSession;
 
-
-    public boolean initRace() {
-        if (Objects.isNull(session)) {
-            RaceSettings settings;
-            if(Objects.isNull(raceSettingsService.getSettings())){
-                settings = raceSettingsService.getDefaultSettings();
-            }else{
-                settings = raceSettingsService.getSettings();
-            }
-
-            List<Driver> drivers = driverService.fetchDrivers();
-            drivers = gridService.randomizeGrid(drivers);
-            drivers = gridService.setStartingPositions(drivers);
-
-            session = raceSessionFactory.createRaceSession(settings, drivers);
-            session.setRaceStatus(RaceStatus.READY);
-            return true;
+    public RaceSession initRace(RaceSettings userRaceSettings) {
+        List<Driver> drivers = driverService.fetchDrivers();
+        drivers = gridService.randomizeGrid(drivers);
+        drivers = gridService.setStartingPositions(drivers);
+        if(Objects.isNull(userRaceSettings)){
+            userRaceSettings = raceSettingsService.getDefaultSettings();
         }
-        return false;
+        drivers = raceCalculationService.randomizeCircuitPace(drivers, userRaceSettings);
+        userRaceSession = raceSessionFactory.createRaceSession(userRaceSettings, drivers);
+        userRaceSession.setRaceStatus(RaceStatus.READY);
+        return userRaceSession;
     }
 
-    public void startRace() {
-        if (!Objects.isNull(session) && session.getRaceStatus() == RaceStatus.READY) {
-            session.setRaceStatus(RaceStatus.RACING);
-            session.getDriversList().forEach(driver -> {
+    public RaceSession startRace() {
+        if (!Objects.isNull(userRaceSession) && userRaceSession.getRaceStatus() == RaceStatus.READY) {
+            userRaceSession.setRaceStatus(RaceStatus.RACING);
+            userRaceSession.getDriversList().forEach(driver -> {
                 driver.setStatus(DriverStatus.RACING);
             });
             scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> {
-                if(!session.update()){
+                if(!userRaceSession.update()){
                     shutdownScheduler();
                 }
             }, 0, 1, TimeUnit.SECONDS);
         }
+        return userRaceSession;
     }
 
     @PreDestroy
@@ -70,11 +62,7 @@ public class RaceService {
         scheduler.shutdown();
     }
 
-    public void setSession(RaceSession session) {
-        this.session = session;
-    }
-
-    public RaceSession getSession() {
-        return session;
+    public RaceSession getUserRaceSession() {
+        return userRaceSession;
     }
 }

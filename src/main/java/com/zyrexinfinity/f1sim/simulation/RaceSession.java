@@ -4,9 +4,13 @@ import com.zyrexinfinity.f1sim.enums.DriverStatus;
 import com.zyrexinfinity.f1sim.enums.RaceStatus;
 import com.zyrexinfinity.f1sim.services.GridService;
 import com.zyrexinfinity.f1sim.services.RaceCalculationService;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 
+@Component
+@SessionScope
 public class RaceSession {
     //Services
     private RaceCalculationService calculationService;

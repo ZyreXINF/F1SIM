@@ -7,22 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RaceSettingsService {
-    private RaceSettingsFactory raceSettingsFactory;
-    private RaceSettings settings;
-
     @Autowired
-    public RaceSettingsService(RaceSettingsFactory raceSettingsFactory) {
-        this.raceSettingsFactory = raceSettingsFactory;
-        this.settings = raceSettingsFactory.createDefaultSettings();  // <-- auto–initialize here
-    }
+    private RaceSettingsFactory raceSettingsFactory;
 
     public RaceSettings getDefaultSettings(){
         return raceSettingsFactory.createDefaultSettings();
-    }
-    public RaceSettings getSettings() {
-        return settings;
-    }
-    public void setSettings(RaceSettings settings) {
-        this.settings = settings;
     }
 }
