@@ -20,7 +20,7 @@ public class RaceCalculationService {
             double modifiedDriverPace = normalize(clamp(
                     normalize(driver.getDriverPace()/100) +
                             (normalize(ThreadLocalRandom.current().nextDouble(-1.0, 1.0)
-                                    * settings.getMaxDriverPaceDeviation())),
+                                    * settings.getMaxCircuitPaceDeviation())),
                     0,1));
             System.out.println(driver.getFullName() + " {basePace: " + driver.getDriverPace()
                     + "; finalizedPace: " + (modifiedDriverPace) + "}" );
@@ -44,7 +44,8 @@ public class RaceCalculationService {
 
         double driverPace = normalize((driver.getDriverPace()/100) *
                 settings.getDriverPaceModifier());
-        double maxDriverPaceDeviation = settings.getMaxDriverPaceDeviation();
+
+        double maxDriverPaceDeviation = settings.getMaxLapPaceDeviation();
         // DriverPace + Random * MaxRandomDeviation
         double modifiedDriverPace = normalize(clamp(driverPace +
                         (lapPaceRandomMultiplier *
@@ -69,8 +70,7 @@ public class RaceCalculationService {
         projectedSectorTime = Math.max(projectedSectorTime, baseSectorTime);
 
         System.out.println(driver.getFullName() + " | Base Pace: " + driverPace +
-                " | lapPaceRandomMultiplier: " + lapPaceRandomMultiplier +
-                " | ModifiedPace: " + modifiedDriverPace +
+                " | Pace: " + modifiedDriverPace +
                 " | Score: " + score +
                 " | Delta: " + delta +
                  " | SectorTime: " + projectedSectorTime);
@@ -86,7 +86,7 @@ public class RaceCalculationService {
         }return value;
     }
     private double normalize(double value){
-        return (double) Math.round(value * 1000) /1000;
+        return (double) Math.round(value * 100000) /100000;
     }
 
     public DriverStatus calculateStatus(CalculationContext calculationContext){
@@ -103,8 +103,8 @@ public class RaceCalculationService {
         Driver driver = calculationContext.getDriver();
         double awareness = driver.getDriverAwareness()/100 * settings.getCrashRate();
 
-        double baseChance = 0.0005;
-        double maxAdded = 0.0005;
+        double baseChance = 0.0002 * calculationContext.getSettings().getBaseCrashRate();
+        double maxAdded = 0.0003 * calculationContext.getSettings().getMaxAddedCrashRate();
         double chance = baseChance + (maxAdded * awareness);
         return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= chance;
     }
@@ -114,8 +114,8 @@ public class RaceCalculationService {
         Driver driver = calculationContext.getDriver();
         double reliability = driver.getBolid().getReliability()/100 * settings.getEngineFailureRate();
 
-        double baseChance = 0.0005;
-        double maxAdded = 0.0005;
+        double baseChance = 0.0002 * calculationContext.getSettings().getBaseEngineFailureRate();
+        double maxAdded = 0.0003 * calculationContext.getSettings().getMaxAddedEngineFailureRate();
         double chance = baseChance + (maxAdded * reliability);
         return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= chance;
     }

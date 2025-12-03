@@ -82,6 +82,9 @@ p{
 a{
     text-decoration:none;
 }
+button{
+    font-family: "Open Sans", sans-serif;
+}
 
  .background {
     position: absolute;

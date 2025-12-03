@@ -44,7 +44,7 @@ async function getFullTrackData(trackId) {
 
 function updateTrack(track){
     console.log(track);
-    $('#track-image').attr('src', 'images/' + track.trackImageName + '.webp');
+    $('#track-image').attr('src', 'images/tracks/' + track.trackImageName + '.webp');
     $('#track-name').text(track.trackName);
     jQuery("#track-name").fitText(textFitMultiplier);   
 }

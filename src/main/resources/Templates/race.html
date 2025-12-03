@@ -1,43 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>F1 Race Manager | Race Simulation</title>
-    <link rel="stylesheet" href="style/race.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="javascript/raceSimulation.js"></script>
-</head>
-<body>
-<div class="background"></div>
-
-<div class="container">
-    <div id="menu">
-        <h1 id="lapCounter">Lap: 0</h1>
-        <div class="grid">
-            <ul class="column">
-                <li th:each="driver, stat : ${drivers}" th:if="${stat.index} < 10" th:id="'Driver' + ${stat.index}">
-                    <div class="driver-card" th:id="${driver.team.teamName}">
-                        <div class="position" th:text="'P' + (${stat.index + 1})">PX</div>
-                        <div class="name" th:text="${driver.fullName}">X</div>
-                        <div class="gap">--.---</div>
-                    </div>
-                </li>
-            </ul>
-            <ul class="column">
-                <li th:each="driver, stat : ${drivers}" th:if="${stat.index} >= 10" th:id="'Driver' + ${stat.index}">
-                    <div class="driver-card" th:id="${driver.team.teamName}">
-                        <div class="position" th:id="'driverPos' + (${stat.index})" th:text="'P' + (${stat.index + 1})">PX</div>
-                        <div class="name" th:id="'driverName' + (${stat.index})" th:text="${driver.fullName}">X</div>
-                        <div class="gap" th:id="'gap' + (${stat.index})" >--.---</div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <button class="button" id="race-button">Start</button>
-    </div>
-</div>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>F1SIM | Race</title>
+        <link rel="stylesheet" type="text/css" href="style/race.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="javascript/jquery.fittext.js"></script>
+        <script src="javascript/raceSimulation.js"></script>
+    </head>
+    <body>
+        <div class="background"></div>
+        <header>
+            <div class="title-wrap"><a href="/home"><h1 class="title"><span class="highlight">F1</span>SIM</h1></a></div>
+        </header>
+        <main>
+            <div class="menu">
+                <div class="top-bar">
+                    <p class="lap-counter" id="lap-counter">Lap: 0</p>
+                    <button id="gap-button" disabled>Gap</button>
+                </div>
+                <div class="grid-wrap">
+                    <ul class="list-wrap" id="column1">
+                        <li th:each="driver, stat : ${drivers}" th:if="${stat.index} < 10" th:id="'Driver' + ${stat.index}">
+                            <div class="driver-card" th:id="${driver.team.teamName}">
+                                <div class="position" th:text="'P' + (${stat.index + 1})">P</div>
+                                <div class="name" th:text="${driver.fullName}"></div>
+                                <div class="image-wrap"><image class="team-logo" th:src="'images/logos/' + ${driver.team.teamName} + '.webp'"></image></div>
+                                <div class="gap">--.---</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-wrap" id="column2">
+                        <li th:each="driver, stat : ${drivers}" th:if="${stat.index} >= 10" th:id="'Driver' + ${stat.index}">
+                            <div class="driver-card" th:id="${driver.team.teamName}">
+                                <div class="position" th:text="'P' + (${stat.index + 1})">P</div>
+                                <div class="name" th:id="'driverName' + (${stat.index})" th:text="${driver.fullName}"></div>
+                                <div class="image-wrap"><image class="team-logo" th:src="'images/logos/' + ${driver.team.teamName} + '.webp'"></image></div>
+                                <div class="gap" th:id="'gap' + (${stat.index})" >--.---</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <button id="race-button">Start</button>
+            </div>
+        </main>
+    </body>
 </html>

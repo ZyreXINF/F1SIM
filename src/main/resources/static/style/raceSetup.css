@@ -184,7 +184,6 @@ input[type="radio"]{
     margin: 1.5vh 1.5vw;
 }
 
-
 .popup-track-list-wrap{
     display: flex;
     overflow-y: scroll;
@@ -361,7 +360,7 @@ input[type="radio"]{
     align-items: center;
     width: 90%;
     background-color: rgba(0,0,0,0.3);
-    border-radius: 0.5vw;
+    border-radius: 0.75vw;
     font-size: 1.5vw;
     text-align: center;
     flex: 1;
@@ -390,7 +389,7 @@ input[type="radio"]{
     position: absolute;
     height: 100%;
     width: 0%;
-    border-radius: 0.5vw;
+    border-radius: 0.75vw;
     background-image: linear-gradient(135deg, var(--primary-dark), var(--secondary-pink-lighter));
     transition: width 0.4s ease;
     z-index:0;
@@ -448,7 +447,7 @@ input[type="radio"]{
     width: 95%;
     min-height: 5vh;
     background-color: rgba(0,0,0,0.3);
-    border-radius: 0.5vw;
+    border-radius: 0.75vw;
     font-size: 1.5vw;
     margin-bottom: 0.5vh;
 }
@@ -459,7 +458,7 @@ input[type="radio"]{
     position: absolute;
     height: 100%;
     width: 0%;
-    border-radius: 0.5vw;
+    border-radius: 0.75vw;
     background-image: linear-gradient(135deg, var(--primary-dark), var(--secondary-pink-lighter));
     transition: width 0.4s ease;
     z-index:0;

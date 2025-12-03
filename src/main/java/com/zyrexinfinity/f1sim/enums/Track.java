@@ -46,8 +46,9 @@ public enum Track {
             "Autodromo Hermanos Rodriguez", "Mexico"),
     INTERLAGOS(71,18386,36746,16536,
             "Autodromo Jose Carlos Pace", "Interlagos"),
-    LAS_VEGAS(50,26350,31156,35756,"Las Vegas Strip Circuit", "Las_Vegas");
-//    LUSAIL(57,x,x,x,"Losail International Circuit", "Qatar"),
+    LAS_VEGAS(50,26350,31156,35756,"Las Vegas Strip Circuit", "Las_Vegas"),
+    LUSAIL(57,30636,28069,23851,
+            "Losail International Circuit", "Qatar");
 //    YAS_MARINA(58,x,x,x,"Yas Marina Circuit", "Abu_Dhabi");
 //    TODO ADD DATA TO THIS CIRCUITS
 

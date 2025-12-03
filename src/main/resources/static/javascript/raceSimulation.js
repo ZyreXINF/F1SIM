@@ -1,57 +1,74 @@
 let drivers, oldDriversPositions;
 
+let gapToLeader = false;
+
 let raceStatus;
 let currentLap;
 
 let intervalId;
 
 $(document).ready(async function () {
-    // await requestRaceStatus();
     await requestSessionData();
-
 
     switch (raceStatus) {
         case "RACING":
             intervalId = setInterval(raceLogic, 1500);
-            disableButton();
+            enableGapButtton();
+            disableRaceButton();
             break;
         case "FINISHED":
-            // await requestDriversData();
             await requestSessionData();
+            enableGapButtton();
             updatePositions();
             updateLapCounter();
-            changeButton();
+            resetButton();
             break;
     }
 
     $('#race-button').click(async function () {
         switch (raceStatus) {
             case "READY":
+                enableGapButtton();
+                disableRaceButton();
                 await startRace();
-                disableButton();
                 intervalId = setInterval(raceLogic, 1500);
                 break;
             case "FINISHED":
+                disableRaceButton();
                 await restartRace();
-                // await requestDriversData();
                 await requestSessionData();
                 clearDNFEffect();
                 clearFastestLapEffect();
                 updatePositions();
                 updateLapCounter();
-                disableButton();
                 intervalId = setInterval(raceLogic, 1500);
+                break;
+        }
+    });
+    $('#gap-button').click(async function() {
+        switch(raceStatus){
+            case "READY":
+                console.error("Gap view cannot be changed before race begins")
+                break;
+            case "RACING":
+            case "FINISHED":
+                gapToLeader = !gapToLeader;
+                updatePositions();
                 break;
         }
     });
 });
 
+$(window).on('beforeunload', function(event){
+    event.preventDefault();
+    event.returnValue = ''; 
+    return '';  
+});
+
 async function raceLogic(){
-    // await requestRaceStatus();
     await requestSessionData();
     checkRaceStatus();
     if(raceStatus === "RACING") {
-        // await requestDriversData();
         updatePositions();
     }
     updateLapCounter();
@@ -59,7 +76,7 @@ async function raceLogic(){
 function checkRaceStatus(){
     if(raceStatus === "FINISHED"){
         clearInterval(intervalId);
-        changeButton();
+        resetButton();
     }
 }
 
@@ -74,7 +91,7 @@ function updatePositions() {
     }
 }
 function updateLapCounter(){
-    let lapElement = document.getElementById(`lapCounter`);
+    let lapElement = document.getElementById("lap-counter");
     if(raceStatus === "RACING"){
         let lapNumber = drivers[0].currentLap;
         lapElement.textContent = "Lap: " + lapNumber + "/" + lapAmount;
@@ -84,17 +101,17 @@ function updateLapCounter(){
 
 }
 function updateDriverCard(driver, index, positionDifference) {
-    const driverCard = document.getElementById(`Driver${index}`);
-    const elements = driverCard.getElementsByTagName("div");
+    const listElement = document.getElementById(`Driver${index}`);
+    const elements = listElement.getElementsByTagName("div");
 
-    updateTeamStripe(elements[0], driver);
-    updateDriverName(elements[2], driver);
     updateFastestLapState(elements[0], driver);
+    updateDriverName(elements[2], driver);
+    updateTeamLogo(elements[3], driver);
     updateDriverGapOrStatus(elements, driver, index);
-    updateCardMovement(elements[0], positionDifference);
+    // updateCardMovement(elements[0], positionDifference);
 }
-function updateTeamStripe(teamStripeElement, driver) {
-    teamStripeElement.setAttribute("id", driver.team.teamName);
+function updateTeamLogo(teamLogoElement, driver){
+    teamLogoElement.children[0].src = 'images/logos/' + driver.team.teamName + '.webp'; 
 }
 function updateDriverName(nameElement, driver) {
     nameElement.textContent = driver.fullName;
@@ -106,33 +123,22 @@ function updateFastestLapState(teamStripeElement, driver) {
     }
 }
 function updateDriverGapOrStatus(elements, driver, index) {
-    const gapElement = elements[3];
-    const teamStripe = elements[0];
+    const gapElement = elements[4];
+    const driverCard = elements[0];
 
     if (driver.status === "ReliabilityDNF" || driver.status === "CrashDNF") {
         gapElement.textContent = "DNF";
-        teamStripe.classList.add("dnf");
+        driverCard.classList.add("dnf");
     } else if (index !== 0) {
-        gapElement.textContent = "+" + formatTime(driver.raceTime - drivers[index - 1].raceTime);
+        if(gapToLeader){
+            gapElement.textContent = "+" + formatTime(driver.raceTime - drivers[0].raceTime);
+        }else{
+            gapElement.textContent = "+" + formatTime(driver.raceTime - drivers[index - 1].raceTime);
+        }
     }
 }
-function updateCardMovement(teamStripeElement, positionDifference) {
-    if (positionDifference > 0) {
-        flashCard(teamStripeElement, "up");
-    } else if (positionDifference < 0) {
-        flashCard(teamStripeElement, "down");
-    }
-}
-//Formating race time for display
 function formatTime(time) {
     return (time / 1000).toFixed(3);
-}
-//flashing card on position update
-function flashCard(card, direction) {
-    const flashClass = direction === "up" ? "flash-up" : "flash-down";
-    card.classList.remove("flash-up", "flash-down");
-    void card.offsetWidth;
-    card.classList.add(flashClass);
 }
 //Clearing Special Visuals
 function clearDNFEffect(){
@@ -150,12 +156,16 @@ function clearFastestLapEffect(){
     }
 }
 //Button updates
-function disableButton(){
+function disableRaceButton(){
     let button = document.getElementById("race-button");
     button.disabled = true;
     button.textContent = "Race Started";
 }
-function changeButton(){
+function enableGapButtton(){
+    let button = document.getElementById("gap-button");
+    button.disabled = false;
+}
+function resetButton(){
     let button = document.getElementById("race-button");
     button.disabled = false;
     button.textContent = "Restart";

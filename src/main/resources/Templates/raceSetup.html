@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>F1SIM</title>
+        <title>F1SIM | Race Setup</title>
         <link rel="stylesheet" type="text/css" href="style/raceSetup.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
             <div class="popup-track-list-wrap">
                 <ul class="popup-row" th:each="chunk, rowStat : ${chunkedTracks}" th:id="'row-' + ${rowStat.index}">
                     <li th:each="track, i : ${chunk}" th:data-track="${track}" class="popup-track-wrap">
-                        <img class="popup-track-image" th:id="'popup-track-image-' + ${i.index}" th:src="'images/' + ${track.trackImageName} + '.webp'">
+                        <img class="popup-track-image" th:id="'popup-track-image-' + ${i.index}" th:src="'images/tracks/' + ${track.trackImageName} + '.webp'">
                         <div class="popup-track-name-wrap"><p class="popup-track-name" th:text="${track.trackName}"></p></div>
                     </li>
                 </ul>
@@ -39,7 +39,7 @@
                                 <h3 id="circuit-title">Circuit</h3>
                             </div>
                             <div class="track-wrap" id="track-wrap">
-                                <img id="track-image" th:src="'images/' + ${track.trackImageName} + '.webp'">
+                                <img id="track-image" th:src="'images/tracks/' + ${track.trackImageName} + '.webp'">
                                 <div class="track-name-wrap"><p id="track-name" th:text="${track.trackName}"></p></div>
                             </div>
                         </li>
