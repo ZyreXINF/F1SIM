@@ -3,7 +3,6 @@ package com.zyrexinfinity.f1sim.services;
 import com.zyrexinfinity.f1sim.enums.DriverStatus;
 import com.zyrexinfinity.f1sim.simulation.CalculationContext;
 import com.zyrexinfinity.f1sim.simulation.Driver;
-import com.zyrexinfinity.f1sim.simulation.RaceSession;
 import com.zyrexinfinity.f1sim.simulation.RaceSettings;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class RaceCalculationService {
-    public List<Driver> randomizeCircuitPace(List<Driver> unmodifiedGrid, RaceSettings settings){
+    public List<Driver> randomizeDriverCircuitPace(List<Driver> unmodifiedGrid, RaceSettings settings){
         List<Driver> modifiedGrid = new ArrayList<>(unmodifiedGrid);
         System.out.println(settings);
         for (Driver driver : modifiedGrid) {
@@ -23,7 +22,7 @@ public class RaceCalculationService {
                                     * settings.getMaxCircuitPaceDeviation())),
                     0,1));
             System.out.println(driver.getFullName() + " {basePace: " + driver.getDriverPace()
-                    + "; finalizedPace: " + (modifiedDriverPace) + "}" );
+                    + "; finalizedPace: " + (modifiedDriverPace) + "}");
             driver.setDriverPace(modifiedDriverPace * 100);
         }
         return modifiedGrid;
@@ -42,9 +41,7 @@ public class RaceCalculationService {
         RaceSettings settings = calculationContext.getSettings();
         Driver driver = calculationContext.getDriver();
 
-        double driverPace = normalize((driver.getDriverPace()/100) *
-                settings.getDriverPaceModifier());
-
+        double driverPace = normalize(driver.getDriverPace()/100);
         double maxDriverPaceDeviation = settings.getMaxLapPaceDeviation();
         // DriverPace + Random * MaxRandomDeviation
         double modifiedDriverPace = normalize(clamp(driverPace +
@@ -52,13 +49,18 @@ public class RaceCalculationService {
                                 maxDriverPaceDeviation),
                 0,1));
 
+        double modifiedBolidPace;
+        if(!calculationContext.getSettings().isEqualBolidPerformance()){
+            modifiedBolidPace = normalize(driver.getBolid().getBolidPace()/100);
+        }else{
+            modifiedBolidPace = 1;
+        }
+
         double driverPerformanceRatio = settings.getDriverPerformanceRatio();
         double carPerformanceRatio = settings.getCarPerformanceRatio();
-        double bolidAerodynamicRating = normalize((driver.getBolid().getAerodynamicRating()/100) *
-                settings.getAerodynamicRatingModifier());
         // driverPerformanceRatio * (1-modifiedDriverPace) + carPerformanceRatio * (1 - aerodynamicRating)
         double score = normalize(driverPerformanceRatio * (1 - modifiedDriverPace) +
-                carPerformanceRatio * (1 - bolidAerodynamicRating));
+                carPerformanceRatio * (1 - modifiedBolidPace));
 
         double maxTimeDeviation = settings.getMaxTimeDeviation();
         //score * maxTimeDeviation
@@ -103,8 +105,8 @@ public class RaceCalculationService {
         Driver driver = calculationContext.getDriver();
         double awareness = driver.getDriverAwareness()/100 * settings.getCrashRate();
 
-        double baseChance = 0.0002 * calculationContext.getSettings().getBaseCrashRate();
-        double maxAdded = 0.0003 * calculationContext.getSettings().getMaxAddedCrashRate();
+        double baseChance = calculationContext.getSettings().getCrashRate();
+        double maxAdded = calculationContext.getSettings().getMaxAddedCrashRate();
         double chance = baseChance + (maxAdded * awareness);
         return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= chance;
     }
@@ -112,10 +114,16 @@ public class RaceCalculationService {
     private boolean calculateEngineFailure(CalculationContext calculationContext){
         RaceSettings settings = calculationContext.getSettings();
         Driver driver = calculationContext.getDriver();
-        double reliability = driver.getBolid().getReliability()/100 * settings.getEngineFailureRate();
 
-        double baseChance = 0.0002 * calculationContext.getSettings().getBaseEngineFailureRate();
-        double maxAdded = 0.0003 * calculationContext.getSettings().getMaxAddedEngineFailureRate();
+        double reliability;
+        if(!calculationContext.getSettings().isEqualBolidPerformance()){
+            reliability = driver.getBolid().getReliability()/100 * settings.getEngineFailureRate();
+        }else{
+            reliability = 1;
+        }
+
+        double baseChance = calculationContext.getSettings().getEngineFailureRate();
+        double maxAdded = calculationContext.getSettings().getMaxAddedEngineFailureRate();
         double chance = baseChance + (maxAdded * reliability);
         return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= chance;
     }

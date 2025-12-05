@@ -35,7 +35,7 @@ public class RaceService {
         if(Objects.isNull(userRaceSettings)){
             userRaceSettings = raceSettingsService.getDefaultSettings();
         }
-        drivers = raceCalculationService.randomizeCircuitPace(drivers, userRaceSettings);
+        drivers = raceCalculationService.randomizeDriverCircuitPace(drivers, userRaceSettings);
         userRaceSession = raceSessionFactory.createRaceSession(userRaceSettings, drivers);
         userRaceSession.setRaceStatus(RaceStatus.READY);
         return userRaceSession;

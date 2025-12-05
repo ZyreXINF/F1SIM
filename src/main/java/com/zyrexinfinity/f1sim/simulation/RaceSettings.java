@@ -13,17 +13,11 @@ public class RaceSettings{
             maxLapPaceDeviation,
             carPerformanceRatio,
             driverPerformanceRatio,
-            driverPaceModifier,
-            aerodynamicRatingModifier,
-            crashRate, engineFailureRate,
-            spinOutModifier, rainSpinoutModifier,
-            baseCrashRate, maxAddedCrashRate,
-            baseEngineFailureRate, maxAddedEngineFailureRate;
-    private String gridYear;
+            crashRate, rainCrashRate, engineFailureRate,
+            maxAddedCrashRate, maxAddedEngineFailureRate;
+    private boolean equalBolidPerformance;
 
-    public RaceSettings(){}
-
-    public RaceSettings(Track track, Weather weather, Gamemode gamemode, double maxTimeDeviation, double maxCircuitPaceDeviation, double maxLapPaceDeviation, double carPerformanceRatio, double driverPerformanceRatio, double driverPaceModifier, double aerodynamicRatingModifier, double crashRate, double engineFailureRate, double spinOutModifier, double rainSpinoutModifier, double baseCrashRate, double maxAddedCrashRate, double baseEngineFailureRate, double maxAddedEngineFailureRate, String gridYear) {
+    public RaceSettings(Track track, Weather weather, Gamemode gamemode, double maxTimeDeviation, double maxCircuitPaceDeviation, double maxLapPaceDeviation, double carPerformanceRatio, double driverPerformanceRatio, double crashRate, double rainCrashRate, double engineFailureRate, double maxAddedCrashRate, double maxAddedEngineFailureRate, boolean equalBolidPerformance) {
         this.track = track;
         this.weather = weather;
         this.gamemode = gamemode;
@@ -32,17 +26,12 @@ public class RaceSettings{
         this.maxLapPaceDeviation = maxLapPaceDeviation;
         this.carPerformanceRatio = carPerformanceRatio;
         this.driverPerformanceRatio = driverPerformanceRatio;
-        this.driverPaceModifier = driverPaceModifier;
-        this.aerodynamicRatingModifier = aerodynamicRatingModifier;
         this.crashRate = crashRate;
+        this.rainCrashRate = rainCrashRate;
         this.engineFailureRate = engineFailureRate;
-        this.spinOutModifier = spinOutModifier;
-        this.rainSpinoutModifier = rainSpinoutModifier;
-        this.baseCrashRate = baseCrashRate;
         this.maxAddedCrashRate = maxAddedCrashRate;
-        this.baseEngineFailureRate = baseEngineFailureRate;
         this.maxAddedEngineFailureRate = maxAddedEngineFailureRate;
-        this.gridYear = gridYear;
+        this.equalBolidPerformance = equalBolidPerformance;
     }
 
     public RaceSettings(RaceSettings other) {
@@ -54,17 +43,11 @@ public class RaceSettings{
         this.maxLapPaceDeviation = other.getMaxLapPaceDeviation();
         this.carPerformanceRatio = other.getCarPerformanceRatio();
         this.driverPerformanceRatio = other.getDriverPerformanceRatio();
-        this.driverPaceModifier = other.getDriverPaceModifier();
-        this.aerodynamicRatingModifier = other.getAerodynamicRatingModifier();
         this.crashRate = other.getCrashRate();
         this.engineFailureRate = other.getEngineFailureRate();
-        this.spinOutModifier = other.getSpinOutModifier();
-        this.rainSpinoutModifier = other.getRainSpinoutModifier();
-        this.baseCrashRate = other.getBaseCrashRate();
         this.maxAddedCrashRate = other.getMaxAddedCrashRate();
-        this.baseEngineFailureRate = other.getBaseEngineFailureRate();
         this.maxAddedEngineFailureRate = other.getMaxAddedEngineFailureRate();
-        this.gridYear = other.getGridYear();
+        this.equalBolidPerformance = other.isEqualBolidPerformance();
     }
 
     public RaceSettings(RaceSettingsProperties defaults) {
@@ -76,17 +59,11 @@ public class RaceSettings{
         this.maxLapPaceDeviation = defaults.getMaxLapPaceDeviation();
         this.carPerformanceRatio = defaults.getCarPerformanceRatio();
         this.driverPerformanceRatio = defaults.getDriverPerformanceRatio();
-        this.driverPaceModifier = defaults.getDriverPaceModifier();
-        this.aerodynamicRatingModifier = defaults.getAerodynamicRatingModifier();
         this.crashRate = defaults.getCrashRate();
         this.engineFailureRate = defaults.getEngineFailureRate();
-        this.spinOutModifier = defaults.getSpinOutModifier();
-        this.rainSpinoutModifier = defaults.getRainSpinoutModifier();
-        this.baseCrashRate = defaults.getBaseCrashRate();
         this.maxAddedCrashRate = defaults.getMaxAddedCrashRate();
-        this.baseEngineFailureRate = defaults.getBaseEngineFailureRate();
         this.maxAddedEngineFailureRate = defaults.getMaxAddedEngineFailureRate();
-        this.gridYear = defaults.getGridYear();
+        this.equalBolidPerformance = defaults.isEqualBolidPerformance();
     }
 
     @Override
@@ -100,17 +77,12 @@ public class RaceSettings{
                 ", maxLapPaceDeviation=" + maxLapPaceDeviation +
                 ", carPerformanceRatio=" + carPerformanceRatio +
                 ", driverPerformanceRatio=" + driverPerformanceRatio +
-                ", driverPaceModifier=" + driverPaceModifier +
-                ", aerodynamicRatingModifier=" + aerodynamicRatingModifier +
                 ", crashRate=" + crashRate +
+                ", rainCrashRate=" + rainCrashRate +
                 ", engineFailureRate=" + engineFailureRate +
-                ", spinOutModifier=" + spinOutModifier +
-                ", rainSpinoutModifier=" + rainSpinoutModifier +
-                ", baseCrashRate=" + baseCrashRate +
                 ", maxAddedCrashRate=" + maxAddedCrashRate +
-                ", baseEngineFailureRate=" + baseEngineFailureRate +
                 ", maxAddedEngineFailureRate=" + maxAddedEngineFailureRate +
-                ", gridYear='" + gridYear + '\'' +
+                ", equalBolidPerformance=" + equalBolidPerformance +
                 '}';
     }
 
@@ -178,28 +150,20 @@ public class RaceSettings{
         this.driverPerformanceRatio = driverPerformanceRatio;
     }
 
-    public double getDriverPaceModifier() {
-        return driverPaceModifier;
-    }
-
-    public void setDriverPaceModifier(double driverPaceModifier) {
-        this.driverPaceModifier = driverPaceModifier;
-    }
-
-    public double getAerodynamicRatingModifier() {
-        return aerodynamicRatingModifier;
-    }
-
-    public void setAerodynamicRatingModifier(double aerodynamicRatingModifier) {
-        this.aerodynamicRatingModifier = aerodynamicRatingModifier;
-    }
-
     public double getCrashRate() {
         return crashRate;
     }
 
     public void setCrashRate(double crashRate) {
         this.crashRate = crashRate;
+    }
+
+    public double getRainCrashRate() {
+        return rainCrashRate;
+    }
+
+    public void setRainCrashRate(double rainCrashRate) {
+        this.rainCrashRate = rainCrashRate;
     }
 
     public double getEngineFailureRate() {
@@ -210,44 +174,12 @@ public class RaceSettings{
         this.engineFailureRate = engineFailureRate;
     }
 
-    public double getSpinOutModifier() {
-        return spinOutModifier;
-    }
-
-    public void setSpinOutModifier(double spinOutModifier) {
-        this.spinOutModifier = spinOutModifier;
-    }
-
-    public double getRainSpinoutModifier() {
-        return rainSpinoutModifier;
-    }
-
-    public void setRainSpinoutModifier(double rainSpinoutModifier) {
-        this.rainSpinoutModifier = rainSpinoutModifier;
-    }
-
-    public double getBaseCrashRate() {
-        return baseCrashRate;
-    }
-
-    public void setBaseCrashRate(double baseCrashRate) {
-        this.baseCrashRate = baseCrashRate;
-    }
-
     public double getMaxAddedCrashRate() {
         return maxAddedCrashRate;
     }
 
     public void setMaxAddedCrashRate(double maxAddedCrashRate) {
         this.maxAddedCrashRate = maxAddedCrashRate;
-    }
-
-    public double getBaseEngineFailureRate() {
-        return baseEngineFailureRate;
-    }
-
-    public void setBaseEngineFailureRate(double baseEngineFailureRate) {
-        this.baseEngineFailureRate = baseEngineFailureRate;
     }
 
     public double getMaxAddedEngineFailureRate() {
@@ -258,11 +190,11 @@ public class RaceSettings{
         this.maxAddedEngineFailureRate = maxAddedEngineFailureRate;
     }
 
-    public String getGridYear() {
-        return gridYear;
+    public boolean isEqualBolidPerformance() {
+        return equalBolidPerformance;
     }
 
-    public void setGridYear(String gridYear) {
-        this.gridYear = gridYear;
+    public void setEqualBolidPerformance(boolean equalBolidPerformance) {
+        this.equalBolidPerformance = equalBolidPerformance;
     }
 }

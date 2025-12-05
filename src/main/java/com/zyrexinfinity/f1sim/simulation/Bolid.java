@@ -5,12 +5,12 @@ import com.zyrexinfinity.f1sim.model.BolidEntity;
 public class Bolid {
     private String bolidModel;
 
-    private double aerodynamicRating;
+    private double bolidPace;
     private double reliability;
 
     public Bolid(BolidEntity bolidBlueprint) {
         this.bolidModel = bolidBlueprint.getBolidModel();
-        this.aerodynamicRating = bolidBlueprint.getAerodynamicRating();
+        this.bolidPace = bolidBlueprint.getAerodynamicRating();
         this.reliability = bolidBlueprint.getReliability();
     }
 
@@ -18,7 +18,7 @@ public class Bolid {
     public String toString() {
         return "Bolid{" +
                 "bolidModel='" + bolidModel + '\'' +
-                ", aerodynamicRating=" + aerodynamicRating +
+                ", bolidPace=" + bolidPace +
                 ", reliability=" + reliability +
                 '}';
     }
@@ -39,11 +39,11 @@ public class Bolid {
         this.reliability = reliability;
     }
 
-    public double getAerodynamicRating() {
-        return aerodynamicRating;
+    public double getBolidPace() {
+        return bolidPace;
     }
 
-    public void setAerodynamicRating(double aerodynamicRating) {
-        this.aerodynamicRating = aerodynamicRating;
+    public void setBolidPace(double bolidPace) {
+        this.bolidPace = bolidPace;
     }
 }

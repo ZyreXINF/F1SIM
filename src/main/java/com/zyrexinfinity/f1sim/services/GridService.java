@@ -43,7 +43,7 @@ public class GridService {
     public List<Driver> setStartingPositions(List<Driver> rawGrid){
         List<Driver> positionedGrid = new ArrayList<>(rawGrid);
         for (int i = positionedGrid.size()-1; i >= 0; i--) {
-            positionedGrid.get(i).setRaceTime(i* 250L);
+            positionedGrid.get(i).setRaceTime(i* 300L);
         }
         return positionedGrid;
     }

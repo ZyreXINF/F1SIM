@@ -60,9 +60,11 @@ $(document).ready(async function () {
 });
 
 $(window).on('beforeunload', function(event){
-    event.preventDefault();
-    event.returnValue = ''; 
-    return '';  
+    if(raceStatus != "READY"){
+        event.preventDefault();
+        event.returnValue = ''; 
+        return '';  
+    }
 });
 
 async function raceLogic(){

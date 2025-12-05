@@ -271,8 +271,8 @@ input[type="radio"]{
 
 .circuit-title-wrap, 
 .condition-title-wrap, 
-.grid-title-wrap, 
-.racemode-title-wrap{
+.racemode-title-wrap,
+.extra-title-wrap{
     display: flex; 
     justify-content: center; 
     align-items: center; 
@@ -339,7 +339,7 @@ input[type="radio"]{
     z-index: 2;
 }
 
-.conditions-list-wrap, .racemodes-list-wrap{
+.conditions-list-wrap, .racemodes-list-wrap, .extras-list-wrap{
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
@@ -352,13 +352,14 @@ input[type="radio"]{
     padding-top: 0.5vh;
     object-fit: contain;
 }
-.conditions-item-wrap, .racemode-item-wrap{
+.conditions-item-wrap, .racemode-item-wrap, .extra-item-wrap{
     box-sizing: border-box;
     display: flex;
     position: relative;
     justify-content: center;
     align-items: center;
     width: 90%;
+    max-height: 30%;
     background-color: rgba(0,0,0,0.3);
     border-radius: 0.75vw;
     font-size: 1.5vw;
@@ -372,14 +373,49 @@ input[type="radio"]{
     align-items: center; 
     width: 100%;
 }
-.condition-label, .racemode-label{
+.condition-label, .racemode-label, .extra-label{
     display: flex; 
     justify-content: center;
     align-items: center;
+    text-align: center;
     width: 100%;
     height: 100%;
     z-index: 1;
     cursor: pointer;
+}
+
+.extra-item-wrap{
+    padding: 0 1vw;
+}
+.extra-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    appearance: none;
+    width: 1vw;
+    height: 1vw;
+    border: 0.1vw solid var(--primary-dark);
+    border-radius: 0.25vw;
+    place-content: center;
+    cursor: pointer;
+}
+.extra-item::before {
+    content: "";
+    width: 1vw;
+    height: 1vw;
+    border-radius: 0.25vw;
+    position: absolute;
+    transform: scale(0);
+    background-image: linear-gradient(135deg, var(--primary-dark), var(--secondary-pink-lighter));
+    transition: 0.1s transform ease-in-out;
+}
+.extra-item:checked::before {
+    transform: scale(1);
+}
+.extra-label{
+    position: relative;
+    width: 100%;
+    flex:10;
 }
 
 .conditions-item-wrap::before, .racemode-item-wrap::before{
@@ -407,94 +443,10 @@ input[type="radio"]{
 .racemode-item-wrap:not(:has(> .racemode-item[type="radio"]:checked)):hover::before {
     width: 100%;
 }
-.conditions-item-wrap:hover, .racemode-item-wrap:hover {
+.conditions-item-wrap:hover, .racemode-item-wrap:hover, .extra-item-wrap:hover{
     transform: scale(1.05);
 }
 
-.grid-list-wrap{
-    box-sizing: border-box;
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    padding-top: 0.5vh;
-    flex:70%;
-}
-.grid-list-wrap::-webkit-scrollbar {
-  width: 0.7vw;
-}
-.grid-list-wrap::-webkit-scrollbar-track {
-    border-radius: 2vw;
-    background: rgba(0, 0, 0, 0.3);
-}
-.grid-list-wrap::-webkit-scrollbar-thumb {
-  background:var(--secondary-black-lighter);
-  border-radius: 2vw;
-}
-.grid-list-wrap::-webkit-scrollbar-thumb:hover {
-    background-image: linear-gradient(135deg, var(--primary-dark), var(--secondary-pink-lighter));
-}
-
-.grid-item-wrap{
-    box-sizing: border-box;
-    overflow: hidden;
-    display: flex;
-    position: relative;
-    justify-content: flex-start;
-    align-items: center;
-    width: 95%;
-    min-height: 5vh;
-    background-color: rgba(0,0,0,0.3);
-    border-radius: 0.75vw;
-    font-size: 1.5vw;
-    margin-bottom: 0.5vh;
-}
-.grid-item-wrap::before{
-    content: '';
-    top: 0;
-    left: 0;
-    position: absolute;
-    height: 100%;
-    width: 0%;
-    border-radius: 0.75vw;
-    background-image: linear-gradient(135deg, var(--primary-dark), var(--secondary-pink-lighter));
-    transition: width 0.4s ease;
-    z-index:0;
-    object-fit: contain;
-}
-.grid-item{
-    display: flex; 
-    flex-direction: row;
-    justify-content: center; 
-    align-items: center; 
-    width: 100%;
-}
-.grid-item-wrap:has(> .grid-item[type="radio"]:checked){
-    background: none;
-}
-.grid-item-wrap:has(> .grid-item[type="radio"]:checked)::before {
-    width: 100%; 
-}
-.grid-item-wrap:not(:has(> .grid-item[type="radio"]:checked)):hover::before {
-    width: 100%;
-}
-.grid-item-wrap:hover {
-    transform: scale(1.05);
-}
-.grid-label, .driver-amount{
-    z-index: 1;
-    cursor: pointer;
-    height: 100%;
-}
-.grid-label{
-    flex:50%;
-    display: flex; 
-    justify-content: flex-start;
-    align-items: center; 
-    padding-left: 1vw;
-}
 .driver-amount{
     flex:40%;
     display: flex; 
@@ -548,12 +500,12 @@ input[type="radio"]{
 }
 
 #track-selection,
-#grid-selection, 
 #conditions-selection,
-#mode-selection{
+#mode-selection, #extra{
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     border-radius: 2vw;
@@ -563,19 +515,10 @@ input[type="radio"]{
     object-fit: contain;
     position: relative;
 }
-#track-selection{
-    flex-direction: column;
-}
-#grid-selection, 
-#conditions-selection, 
-#mode-selection{
-    flex-direction: column;
-    overflow: hidden;
-}
 #track-selection::before, 
-#grid-selection::before, 
 #conditions-selection::before, 
-#mode-selection::before{
+#mode-selection::before,
+#extra::before{
     content: '';
     top: 0;
     left: 0;
@@ -590,26 +533,26 @@ input[type="radio"]{
 #track-selection::before{
     background-image: linear-gradient(135deg, var(--secondary-black-color), var(--secondary-black-lighter));
 } 
-#grid-selection::before{
-    background-image: linear-gradient(225deg, var(--secondary-black-color), var(--secondary-black-lighter));    
-} 
 #conditions-selection::before{
     background-image: linear-gradient(45deg, var(--secondary-black-color), var(--secondary-black-lighter));    
 } 
 #mode-selection::before{
+    background-image: linear-gradient(225deg, var(--secondary-black-color), var(--secondary-black-lighter)); 
+}
+#extra::before{
     background-image: linear-gradient(315deg, var(--secondary-black-color), var(--secondary-black-lighter)); 
 }
 #track-selection:hover::before,
-#grid-selection:hover::before,
 #conditions-selection:hover::before,
-#mode-selection:hover::before{
+#mode-selection:hover::before,
+#extra:hover::before{
     transform: rotate(180deg);
 }
 
 #circuit-title, 
-#grid-title, 
 #condition-title, 
-#racemode-title{
+#racemode-title, 
+#extra-title{
     text-align: center;
 }
 
