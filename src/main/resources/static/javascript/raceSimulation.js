@@ -15,10 +15,12 @@ $(document).ready(async function () {
             intervalId = setInterval(raceLogic, 1500);
             enableGapButtton();
             disableRaceButton();
+            disableSettingsButton();
             break;
         case "FINISHED":
             await requestSessionData();
             enableGapButtton();
+            enableSettingsButton();
             updatePositions();
             updateLapCounter();
             resetButton();
@@ -30,11 +32,13 @@ $(document).ready(async function () {
             case "READY":
                 enableGapButtton();
                 disableRaceButton();
+                disableSettingsButton();
                 await startRace();
                 intervalId = setInterval(raceLogic, 1500);
                 break;
             case "FINISHED":
                 disableRaceButton();
+                disableSettingsButton();
                 await restartRace();
                 await requestSessionData();
                 clearDNFEffect();
@@ -56,6 +60,9 @@ $(document).ready(async function () {
                 updatePositions();
                 break;
         }
+    });
+    $('#settings-button').click(async function(){
+        window.location.href = "/raceSetup"; 
     });
 });
 
@@ -79,6 +86,7 @@ function checkRaceStatus(){
     if(raceStatus === "FINISHED"){
         clearInterval(intervalId);
         resetButton();
+        enableSettingsButton();
     }
 }
 
@@ -163,6 +171,14 @@ function disableRaceButton(){
     button.disabled = true;
     button.textContent = "Race Started";
 }
+function disableSettingsButton(){
+    let button = document.getElementById("settings-button");
+    button.disabled = true;
+}
+function enableSettingsButton(){
+    let button = document.getElementById("settings-button");
+    button.disabled = false;
+}
 function enableGapButtton(){
     let button = document.getElementById("gap-button");
     button.disabled = false;
@@ -202,17 +218,9 @@ async function requestSessionData() {
 //Race control
 async function startRace() {
     return new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            url: "/startRace",
-            success: function () {
-                resolve();
-            },
-            error: function (error) {
-                console.error("Error occurred:", error);
-                reject(error);
-            },
-        });
+        $.post("/startRace")
+            .done(() => resolve())
+            .fail(error => reject(error));
     });
 }
 async function restartRace() {

@@ -38,7 +38,7 @@
                             <div class="circuit-title-wrap">
                                 <h3 id="circuit-title">Circuit</h3>
                             </div>
-                            <div class="track-wrap" id="track-wrap">
+                            <div class="track-wrap" id="track-wrap" th:data-track="${track}">
                                 <img id="track-image" th:src="'images/tracks/' + ${track.trackImageName} + '.webp'">
                                 <div class="track-name-wrap"><p id="track-name" th:text="${track.trackName}"></p></div>
                             </div>
@@ -49,22 +49,22 @@
                             </div>
                             <div class="conditions-list-wrap">
                                 <div class="conditions-item-wrap">
-                                    <input class="condition-item" id="clear-condition" type="radio" name="condition" value="clear" checked>
+                                    <input class="condition-item" id="clear-condition" type="radio" name="condition" value="CLEAR" checked>
                                         <label class="condition-label" for="clear-condition">Clear ☀︎</label>
                                     </input>
                                 </div>
                                 <div class="conditions-item-wrap">
-                                    <input class="condition-item" id="rain-condition" type="radio" name="condition" value="rain">
+                                    <input class="condition-item" id="rain-condition" type="radio" name="condition" value="RAIN">
                                         <label class="condition-label" for="rain-condition">Rain 🌨</label>
                                     </input>
                                 </div>
                                 <div class="conditions-item-wrap">
-                                    <input class="condition-item" id="heavy-rain-condition" type="radio" name="condition" value="heavyRain">
+                                    <input class="condition-item" id="heavy-rain-condition" type="radio" name="condition" value="HEAVY_RAIN">
                                         <label class="condition-label" for="heavy-rain-condition">Heavy Rain 🌩</label>                                
                                     </input>
                                 </div>
                                 <div class="conditions-item-wrap">
-                                    <input class="condition-item" id="random-condition" type="radio" name="condition" value="random">
+                                    <input class="condition-item" id="random-condition" type="radio" name="condition" value="Random">
                                         <label class="condition-label" for="random-condition">Random ⇄</label>
                                     </input>
                                 </div>
@@ -78,22 +78,22 @@
                             </div>
                             <div class="racemodes-list-wrap">
                                 <div class="racemode-item-wrap">
-                                    <input class="racemode-item" id="racemode-race" type="radio" name="racemode" value="race" checked>
+                                    <input class="racemode-item" id="racemode-race" type="radio" name="racemode" value="RACE" checked>
                                         <label class="racemode-label" for="racemode-race">Race</label>
                                     </input>
                                 </div>
                                 <div class="racemode-item-wrap">
-                                    <input class="racemode-item" id="racemode-sprint" type="radio" name="racemode" value="sprint">
+                                    <input class="racemode-item" id="racemode-sprint" type="radio" name="racemode" value="SPRINT">
                                         <label class="racemode-label" for="racemode-sprint">Sprint</label>
                                     </input>
                                 </div>
                                 <div class="racemode-item-wrap">
-                                    <input class="racemode-item" id="racemode-racegp" type="radio" name="racemode" value="qualiAndRace">
+                                    <input class="racemode-item" id="racemode-racegp" type="radio" name="racemode" value="QULI_RACE">
                                         <label class="racemode-label" for="racemode-racegp">Quali + Race</label>
                                     </input>
                                 </div>
                                 <div class="racemode-item-wrap">
-                                    <input class="racemode-item" id="racemode-sprintgp" type="radio" name="racemode" value="qualiAndSprint">
+                                    <input class="racemode-item" id="racemode-sprintgp" type="radio" name="racemode" value="QUALI_SPRINT">
                                         <label class="racemode-label" for="racemode-sprintgp">Quali + Sprint</label>                                
                                     </input>
                                 </div>
@@ -113,6 +113,7 @@
                         </li>
                     </ul>
                 </div>
+                <button class="submit-button" id="submit-button">Start</button>
                 <div class="social">
                     <p id="annotation">Made by <span class="highlight">ZyreX-Infinity</span></p>
                     <a class="logo-wrap" href="https://github.com/ZyreXINF" target="_blank">
