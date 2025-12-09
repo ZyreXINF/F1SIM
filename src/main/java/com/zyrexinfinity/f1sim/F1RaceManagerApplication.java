@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan(basePackages = "com.zyrexinfinity.f1sim.model")
-@EnableJpaRepositories(basePackages = "com.zyrexinfinity.f1sim.repository")
+@EntityScan(basePackages = "com.zyrexinfinity.f1sim.persistence.entity")
+@EnableJpaRepositories(basePackages = "com.zyrexinfinity.f1sim.persistence.repository")
 public class F1RaceManagerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(F1RaceManagerApplication.class, args);

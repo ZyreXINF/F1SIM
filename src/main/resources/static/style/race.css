@@ -17,11 +17,11 @@
 
     --secondary-white-color: #FDF7FA; /*253, 247, 250*/
 
-    --shadow-color: rgba(31, 30, 30, 0.5);
-
-    --flash-green: rgb(43, 255, 43);
-    --flash-red: rgb(196, 57, 57);
-    --flash-transparent: rgba(0, 0, 0, 0);
+    --soft-compound-color: #BF4E4A;
+    --medium-compound-color: #FFD639;
+    --hard-compound-color: #FDF7FA;
+    --intermediate-compound-color: #06B25F;
+    --wet-compound-color: #263FA6;
 }
 
 html, body {
@@ -181,8 +181,8 @@ button{
     overflow: hidden;
     border-radius: 0.75vw;
     height: 2.5vh;
-    width: 17.5vw;
-    padding: 1vh 0.5vw;
+    width: 20vw;
+    padding: 1vh 1vw;
 }
 .driver-card:hover{
     transform: scale(1.1);
@@ -211,6 +211,25 @@ button{
 .team-logo{
     height: 100%;
     width: 100%;
+}
+
+.compound{
+    font-weight: 700;
+}
+#soft{
+    color: var(--soft-compound-color);
+}
+#medium{
+    color: var(--medium-compound-color);
+}
+#hard{
+    color: var(--hard-compound-color);
+}
+#intermediate{
+    color: var(--intermediate-compound-color);
+}
+#wet{
+    color: var(--wet-compound-color);
 }
 
 .button-wrap{
@@ -344,5 +363,5 @@ button{
 
 
 * {
-  transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
 }

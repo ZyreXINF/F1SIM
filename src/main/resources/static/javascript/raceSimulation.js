@@ -103,7 +103,7 @@ function updatePositions() {
 function updateLapCounter(){
     let lapElement = document.getElementById("lap-counter");
     if(raceStatus === "RACING"){
-        let lapNumber = drivers[0].currentLap;
+        let lapNumber = drivers[0].raceStats.currentLap;
         lapElement.textContent = "Lap: " + lapNumber + "/" + lapAmount;
     }else if(raceStatus === "FINISHED"){
         lapElement.textContent = "Race Finished";
@@ -118,6 +118,7 @@ function updateDriverCard(driver, index, positionDifference) {
     updateDriverName(elements[2], driver);
     updateTeamLogo(elements[3], driver);
     updateDriverGapOrStatus(elements, driver, index);
+    updateDriverCompound(elements[5], driver);
     // updateCardMovement(elements[0], positionDifference);
 }
 function updateTeamLogo(teamLogoElement, driver){
@@ -127,7 +128,7 @@ function updateDriverName(nameElement, driver) {
     nameElement.textContent = driver.fullName;
 }
 function updateFastestLapState(teamStripeElement, driver) {
-    if (driver.setFastestLap) {
+    if (driver.raceStats.setFastestLap) {
         clearFastestLapEffect();
         teamStripeElement.classList.add("fastest");
     }
@@ -136,19 +137,44 @@ function updateDriverGapOrStatus(elements, driver, index) {
     const gapElement = elements[4];
     const driverCard = elements[0];
 
-    if (driver.status === "ReliabilityDNF" || driver.status === "CrashDNF") {
+    if (driver.raceStats.status === "ReliabilityDNF" || driver.raceStats.status === "CrashDNF") {
         gapElement.textContent = "DNF";
         driverCard.classList.add("dnf");
     } else if (index !== 0) {
         if(gapToLeader){
-            gapElement.textContent = "+" + formatTime(driver.raceTime - drivers[0].raceTime);
+            gapElement.textContent = "+" + formatTime(driver.raceStats.raceTime - drivers[0].raceStats.raceTime);
         }else{
-            gapElement.textContent = "+" + formatTime(driver.raceTime - drivers[index - 1].raceTime);
+            gapElement.textContent = "+" + formatTime(driver.raceStats.raceTime - drivers[index - 1].raceStats.raceTime);
         }
     }
 }
 function formatTime(time) {
     return (time / 1000).toFixed(3);
+}
+function updateDriverCompound(compoundElement, driver){
+    console.log(driver.fullName + " | " + driver.raceStats.tyres.compound);
+    switch(driver.raceStats.tyres.compound){
+        case "SOFT": 
+            compoundElement.textContent = "S"
+            compoundElement.id = "soft";
+            break;
+        case "MEDIUM":
+            compoundElement.textContent = "M"
+            compoundElement.id = "medium";
+            break;
+        case "HARD":
+            compoundElement.textContent = "H"
+            compoundElement.id = "hard";
+            break;
+        case "INTERMEDIATE":
+            compoundElement.textContent = "I"
+            compoundElement.id = "intermediate";
+            break;
+        case "WET":
+            compoundElement.textContent = "W"
+            compoundElement.id = "wet";
+            break;
+    }
 }
 //Clearing Special Visuals
 function clearDNFEffect(){

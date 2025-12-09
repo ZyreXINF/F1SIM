@@ -1,8 +1,8 @@
 package com.zyrexinfinity.f1sim.config;
 
-import com.zyrexinfinity.f1sim.enums.Gamemode;
-import com.zyrexinfinity.f1sim.enums.Track;
-import com.zyrexinfinity.f1sim.enums.Weather;
+import com.zyrexinfinity.f1sim.domain.enums.Gamemode;
+import com.zyrexinfinity.f1sim.domain.enums.Track;
+import com.zyrexinfinity.f1sim.domain.enums.Weather;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -25,6 +25,7 @@ public class RaceSettingsProperties {
     private double maxAddedCrashRate;
     private double engineFailureRate;
     private double maxAddedEngineFailureRate;
+    private double tyreDegradationRate;
     private boolean equalBolidPerformance;
 
     public Track getTrack() {
@@ -129,6 +130,14 @@ public class RaceSettingsProperties {
 
     public void setMaxAddedEngineFailureRate(double maxAddedEngineFailureRate) {
         this.maxAddedEngineFailureRate = maxAddedEngineFailureRate;
+    }
+
+    public double getTyreDegradationRate() {
+        return tyreDegradationRate;
+    }
+
+    public void setTyreDegradationRate(double tyreDegradationRate) {
+        this.tyreDegradationRate = tyreDegradationRate;
     }
 
     public boolean isEqualBolidPerformance() {

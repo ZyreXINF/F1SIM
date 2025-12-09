@@ -29,7 +29,8 @@
                                 <div class="position" th:text="'P' + (${stat.index + 1})">P</div>
                                 <div class="name" th:text="${driver.fullName}"></div>
                                 <div class="image-wrap"><image class="team-logo" th:src="'images/logos/' + ${driver.team.teamName} + '.webp'"></image></div>
-                                <div class="gap">--.---</div>
+                                <div class="gap">Interval</div>
+                                <div class="compound">?</div>
                             </div>
                         </li>
                     </ul>
@@ -37,9 +38,10 @@
                         <li th:each="driver, stat : ${drivers}" th:if="${stat.index} >= 10" th:id="'Driver' + ${stat.index}">
                             <div class="driver-card" th:id="${driver.team.teamName}">
                                 <div class="position" th:text="'P' + (${stat.index + 1})">P</div>
-                                <div class="name" th:id="'driverName' + (${stat.index})" th:text="${driver.fullName}"></div>
+                                <div class="name" th:text="${driver.fullName}"></div>
                                 <div class="image-wrap"><image class="team-logo" th:src="'images/logos/' + ${driver.team.teamName} + '.webp'"></image></div>
-                                <div class="gap" th:id="'gap' + (${stat.index})" >--.---</div>
+                                <div class="gap">Interval</div>
+                                <div class="compound">?</div>
                             </div>
                         </li>
                     </ul>
