@@ -2,26 +2,24 @@ package com.zyrexinfinity.f1sim.domain.model;
 
 import com.zyrexinfinity.f1sim.domain.enums.DriverStatus;
 import com.zyrexinfinity.f1sim.domain.enums.RaceStatus;
+import com.zyrexinfinity.f1sim.domain.enums.TyreCompound;
+import com.zyrexinfinity.f1sim.domain.enums.Weather;
 import com.zyrexinfinity.f1sim.service.GridService;
 import com.zyrexinfinity.f1sim.service.RaceCalculationService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @SessionScope
 public class RaceSession {
-    //Services
     private RaceCalculationService calculationService;
     private GridService gridService;
 
-    //Settings/Calculation-Related Variables
     private RaceSettings settings;
     private CalculationContext calculationContext;
 
-    //Simulation-Related Variables
     private RaceStatus raceStatus;
     private int currentLap;
     private long fastestLapTime;
@@ -39,58 +37,90 @@ public class RaceSession {
         this.fastestLapTime = 0;
     }
 
-    public boolean update(){
-        if(raceStatus == RaceStatus.RACING){
-            driversList.forEach(driver -> {
-                if(driver.getRaceStats().getStatus() == DriverStatus.RACING){
-                    calculationContext.setDriver(driver);
+    public boolean update() {
+        if (raceStatus != RaceStatus.RACING) return false;
 
-                    //Calculation of DNF
-                    DriverStatus status = calculationService.calculateStatus(calculationContext);
+        driversList.forEach(this::processDriver);
+        currentLap++;
 
-                    if(status == DriverStatus.RACING){
-                        //Calculation of lap time
-                        long calculatedLapTime = calculationService.calculateLapTime(calculationContext);
-                        double tyreWear = calculationService.calculateTyreWear(calculationContext);
-                        long driversFastestLap = driver.getRaceStats().getFastestLap();
-
-                        //Personal Best Laptime
-                        if (driversFastestLap <= 0 || calculatedLapTime < driversFastestLap) {
-                            driver.getRaceStats().setFastestLap(calculatedLapTime);
-                        }
-                        //Overall Best Laptime
-                        if (fastestLapTime <= 0 || calculatedLapTime < fastestLapTime) {
-                            fastestLapTime = calculatedLapTime;
-                            driversList.forEach(driver1 -> {driver1.getRaceStats().setSetFastestLap(false);});
-                            driver.getRaceStats().setSetFastestLap(true);
-                        }
-
-                        driver.getRaceStats().setRaceTime(driver.getRaceStats().getRaceTime() + calculatedLapTime);
-                        driver.getRaceStats().setCurrentLap(driver.getRaceStats().getCurrentLap()+1);
-                        driver.getRaceStats().getTyres().setTyreAge(driver.getRaceStats().getTyres().getTyreAge()+1);
-                        driver.getRaceStats().getTyres().setTyreWear(tyreWear);
-
-                    }else{
-                        driver.getRaceStats().setStatus(status);
-                    }
-                }
-            });
-
-            currentLap++;
-
-            if(currentLap == settings.getTrack().getLapsNumber()){
-                driversList.forEach(driver -> {
-                    if(driver.getRaceStats().getStatus() == DriverStatus.RACING){
-                        driver.getRaceStats().setStatus(DriverStatus.Finished);
-                    }
-                });
-                stop();
-            }
-
-            driversList = gridService.sortPositions(driversList);
-            return true;
+        if (currentLap == settings.getTrack().getLapsNumber()) {
+            finishAllRacingDrivers();
+            stop();
         }
-        return false;
+
+        driversList = gridService.sortPositions(driversList);
+        return true;
+    }
+    private void processDriver(Driver driver) {
+        var stats = driver.getRaceStats();
+
+        if (stats.getStatus() != DriverStatus.RACING) return;
+
+        calculationContext.setDriver(driver);
+        DriverStatus newStatus = calculationService.calculateStatus(calculationContext);
+
+        if (newStatus != DriverStatus.RACING) {
+            stats.setStatus(newStatus);
+            return;
+        }
+
+        handleLapProgress(driver, stats);
+    }
+    private void handleLapProgress(Driver driver, RaceStats stats) {
+        long lapTime = calculationService.calculateLapTime(calculationContext);
+        double tyreWear = calculationService.calculateTyreWear(calculationContext);
+
+        updateFastestLaps(driver, stats, lapTime);
+
+        stats.setRaceTime(stats.getRaceTime() + lapTime);
+        stats.setCurrentLap(stats.getCurrentLap() + 1);
+        stats.getTyres().incrementAge();
+        stats.getTyres().setTyreWear(tyreWear);
+
+        if (calculationService.calculatePitProbability(calculationContext)) {
+            performPitStop(driver, stats, tyreWear);
+        }
+    }
+
+    private void updateFastestLaps(Driver driver, RaceStats stats, long lapTime) {
+        long personalBest = stats.getFastestLap();
+        if (personalBest <= 0 || lapTime < personalBest) {
+            stats.setFastestLap(lapTime);
+        }
+
+        if (fastestLapTime <= 0 || lapTime < fastestLapTime) {
+            fastestLapTime = lapTime;
+
+            driversList.forEach(d -> d.getRaceStats().setSetFastestLap(false));
+            stats.setSetFastestLap(true);
+        }
+    }
+
+    private void performPitStop(Driver driver, RaceStats stats, double tyreWear) {
+        long pitTime = calculationService.calculatePitStopTime()
+                + settings.getTrack().getDriveTroughTime();
+
+        stats.setRaceTime(stats.getRaceTime() + pitTime);
+
+        TyreCompound newCompound = pickCompound(settings.getWeather());
+        stats.setTyres(new TyreSet(newCompound));
+
+        System.out.println(driver.getFullName() + " pitted for " + newCompound +
+                " | tyreWear: " + tyreWear + " | pitTime: " + pitTime +
+                " | lap: " + currentLap);
+    }
+    private TyreCompound pickCompound(Weather weather) {
+        if (weather == Weather.CLEAR) return calculationService.pickDryCompound();
+        if (weather == Weather.RAIN) return TyreCompound.INTERMEDIATE;
+        return TyreCompound.WET;
+    }
+
+    private void finishAllRacingDrivers() {
+        driversList.forEach(driver -> {
+            if (driver.getRaceStats().getStatus() == DriverStatus.RACING) {
+                driver.getRaceStats().setStatus(DriverStatus.Finished);
+            }
+        });
     }
 
     private void stop(){

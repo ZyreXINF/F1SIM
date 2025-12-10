@@ -1,8 +1,8 @@
 package com.zyrexinfinity.f1sim.domain.enums;
 
 public enum TyreCompound {
-    SOFT(1.0,1.75),
-    MEDIUM(1.0075,1.4),
+    SOFT(1.0,1.85),
+    MEDIUM(1.0075,1.25),
     HARD(1.01,1.0),
     INTERMEDIATE(1.0075,1.0),
     WET(1.125,1.0);

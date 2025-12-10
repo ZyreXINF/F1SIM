@@ -51,11 +51,11 @@ public class RaceCalculationService {
 
         return modifiedGrid;
     }
-    private TyreCompound pickDryCompound() {
+    public TyreCompound pickDryCompound() {
         int roll = ThreadLocalRandom.current().nextInt(100);
-        if (roll <= 25) {
+        if (roll <= 30) {
             return TyreCompound.SOFT;
-        } else if (roll > 25 && roll <= 75) {
+        } else if (roll > 30 && roll <= 75) {
             return TyreCompound.MEDIUM;
         }else{
             return TyreCompound.HARD;
@@ -103,12 +103,12 @@ public class RaceCalculationService {
         double wearPenalty = 1.0 + (tyreWear * tyreWear * 0.05);
         projectedSectorTime *= wearPenalty;
 
-        System.out.println(driver.getFullName() +
-                " | D: " + driverPace +
-                " | Dm " + modifiedDriverPace +
-                " | B: " + driverPace +
-                " | Bm " + modifiedBolidPace +
-                 " | T: " + projectedSectorTime);
+//        System.out.println(driver.getFullName() +
+//                " | D: " + driverPace +
+//                " | Dm " + modifiedDriverPace +
+//                " | B: " + driverPace +
+//                " | Bm " + modifiedBolidPace +
+//                 " | T: " + projectedSectorTime);
 
         return Math.round(projectedSectorTime);
     }
@@ -126,6 +126,45 @@ public class RaceCalculationService {
         double calculatedWear = tyres.getTyreWear() + wearThisLap;
 
         return normalize(clamp(calculatedWear, 0.0, 1.0));
+    }
+
+    public boolean calculatePitProbability(CalculationContext calculationContext) {
+        Driver driver = calculationContext.getDriver();
+
+        double wear = driver.getRaceStats().getTyres().getTyreWear();
+        int currentLap = driver.getRaceStats().getCurrentLap();
+        int totalLaps = calculationContext.getSettings().getTrack().getLapsNumber();
+
+        if (currentLap >= totalLaps * 0.90) {
+            return false;
+        }
+
+        if (wear >= 0.35) {
+            return true;
+        } else if (wear >= 0.30) {
+            return ThreadLocalRandom.current().nextDouble() < 0.30;
+        } else if (wear >= 0.25) {
+            return ThreadLocalRandom.current().nextDouble() < 0.125;
+        } else {
+            return false;
+        }
+    }
+    public long calculatePitStopTime() {
+        double baseSeconds = 2.2;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        double roll = random.nextDouble();  // 0.0–1.0
+        double finalSeconds;
+
+        if (roll <= 0.05) {
+            finalSeconds = 6.0 + random.nextDouble() * 6.0;
+        } else if (roll > 0.05 && roll < 0.15) {
+            finalSeconds = 3.0 + random.nextDouble() * 3.0;
+        } else {
+            finalSeconds = 1.8 + random.nextDouble() * 1.2;
+        }
+
+        long millis = Math.round(finalSeconds * 1000);
+        return millis;
     }
 
     private double clamp(double value, double minRangeBorder, double maxRangeBorder){
@@ -147,7 +186,6 @@ public class RaceCalculationService {
         }
         return DriverStatus.RACING;
     }
-
     private boolean calculateCrash(CalculationContext calculationContext){
         RaceSettings settings = calculationContext.getSettings();
         Driver driver = calculationContext.getDriver();
@@ -158,7 +196,6 @@ public class RaceCalculationService {
         double chance = baseChance + (maxAdded * awareness);
         return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= chance;
     }
-
     private boolean calculateEngineFailure(CalculationContext calculationContext){
         RaceSettings settings = calculationContext.getSettings();
         Driver driver = calculationContext.getDriver();

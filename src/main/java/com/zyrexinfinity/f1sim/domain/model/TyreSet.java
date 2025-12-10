@@ -22,6 +22,10 @@ public class TyreSet {
                 '}';
     }
 
+    public void incrementAge() {
+        this.tyreAge++;
+    }
+
     public TyreCompound getCompound() {
         return compound;
     }
