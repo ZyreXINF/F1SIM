@@ -13,4 +13,12 @@ public class HomeController {
     public String home(){
         return "index.html";
     }
+    @RequestMapping("/about")
+    public String about(){
+        return "about.html";
+    }
+    @RequestMapping("/credits")
+    public String credits(){
+        return "credits.html";
+    }
 }
