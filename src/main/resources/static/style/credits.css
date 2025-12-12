@@ -232,9 +232,6 @@ form {
 .tech-list li{
     font-size: 1.25vw;
 }
-#tech-spring-list li{
-    justify-self: center;
-}
 
 .data-list{
     gap: 1vw;

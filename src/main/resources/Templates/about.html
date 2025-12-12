@@ -1,21 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>F1SIM | About</title>
-        <link rel="stylesheet" type="text/css" href="style/about.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    </head>
-    <body>
-    <header>
-        <div class="title-wrap"><a href="/home"><h1 class="title"><span class="highlight">F1</span>SIM</h1></a></div>
-    </header>
-        <main>
-            <div class="menu">
-
+<head>
+    <meta charset="UTF-8">
+    <title>F1SIM | About</title>
+    <link rel="stylesheet" type="text/css" href="style/about.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="title-wrap"><a href="/home"><h1 class="title"><span class="highlight">F1</span>SIM</h1></a></div>
+</header>
+    <main>
+        <div class="menu">
+            <div class="subtitle-wrap">
+                <div class="top-wrap">
+                    <form action="/home">
+                        <button class="back-button"><</button>
+                    </form>
+                    <h2 class="subtitle">About</h2>
+                </div>
+                <hr class="underline">
             </div>
-        </main>
-    </body>
+            <ul class="row">
+                <li class="element-wrap" id="element-1">
+                    <h3 class="caption" id="caption-1">What is F1SIM?</h3>
+                    <div class="text-wrap">
+                        <p class="text">
+                            F1SIM is a lightweight Formula 1 race simulator that uses real racing concepts such as tyre wear, race pace, pit strategies, weather, and driver performance to simulate full race results.<br><br>
+                            The goal is to provide realistic-feeling race outcomes without relying on heavy graphics or complex physics engines.
+                        </p>                
+                    </div>
+                </li>
+                <li class="element-wrap" id="element-2">
+                    <h3 class="caption" id="caption-2">How it works</h3>
+                    <div class="text-wrap">
+                        <p class="text">
+                            Every lap is simulated individually using:<br>
+                            Driver performance ratings,<br>
+                            Tyre compound behaviour,<br>
+                            Tyre wear progression,<br>
+                            Track characteristics,<br>
+                            Weather conditions<br><br>
+                            The system calculates lap times, decides pit stops, applies degradation, updates positions, and determines race results in real time.
+                        </p>                
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
+</body>
 </html>
